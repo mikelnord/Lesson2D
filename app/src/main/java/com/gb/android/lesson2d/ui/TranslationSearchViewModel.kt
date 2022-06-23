@@ -4,12 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import com.gb.android.lesson2d.data.Repository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
 
-@HiltViewModel
-class TranslationSearchViewModel @Inject constructor(private val repository: Repository) :
+class TranslationSearchViewModel (private val repository: Repository) :
     ViewModel() {
 
     private val _wordToSearch = MutableLiveData<String>()

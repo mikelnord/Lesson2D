@@ -9,14 +9,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.gb.android.lesson2d.databinding.FragmentTranslationSearchBinding
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-@AndroidEntryPoint
 class TranslationSearchFragment : Fragment() {
 
     private lateinit var _binding: FragmentTranslationSearchBinding
     private val binding get() = _binding
-    private val viewModel: TranslationSearchViewModel by activityViewModels()
+    private val viewModel: TranslationSearchViewModel by sharedViewModel()
 
 
     private val textWatcher = object : TextWatcher {

@@ -12,12 +12,13 @@ import com.gb.android.lesson2d.databinding.FragmentResultBinding
 import com.gb.android.lesson2d.model.DataModel
 import com.gb.android.lesson2d.model.Result
 import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ResultFragment : Fragment() {
 
     private var _binding: FragmentResultBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: TranslationSearchViewModel by activityViewModels()
+    private val viewModel: TranslationSearchViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

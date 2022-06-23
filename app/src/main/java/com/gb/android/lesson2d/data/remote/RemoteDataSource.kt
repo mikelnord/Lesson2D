@@ -4,11 +4,10 @@ import com.gb.android.lesson2d.model.DataModel
 import com.gb.android.lesson2d.util.ErrorUtils
 import retrofit2.Response
 import retrofit2.Retrofit
-import javax.inject.Inject
 import com.gb.android.lesson2d.model.Result
 import com.gb.android.lesson2d.network.services.ApiService
 
-class RemoteDataSource @Inject constructor(private val retrofit: Retrofit) {
+class RemoteDataSource (private val retrofit: Retrofit) {
 
     suspend fun searchWord(wordToSearch: String): Result<List<DataModel>> {
         val movieService = retrofit.create(ApiService::class.java)
