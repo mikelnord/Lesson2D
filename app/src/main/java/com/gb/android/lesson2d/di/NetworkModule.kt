@@ -1,44 +1,38 @@
 package com.gb.android.lesson2d.di
 
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object NetworkModule {
 
-    private const val baseUrl = "https://dictionary.skyeng.ru/api/public/v1/"
+val networkModule = module {
+    single { provideHTTPLoggingInterceptor() }
+    single { provideOkHttpClient(loggingInterceptor = get()) }
+    single { provideRetrofit(okHttpClient = get()) }
+}
 
-    @Provides
-    fun provideHTTPLoggingInterceptor(): HttpLoggingInterceptor {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        return interceptor
-    }
+private const val baseUrl = "https://dictionary.skyeng.ru/api/public/v1/"
 
-    @Provides
-    fun provideOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
-    }
+fun provideHTTPLoggingInterceptor(): HttpLoggingInterceptor {
+    val interceptor = HttpLoggingInterceptor()
+    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+    return interceptor
+}
 
-    @Singleton
-    @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
-    }
+fun provideOkHttpClient(
+    loggingInterceptor: HttpLoggingInterceptor
+): OkHttpClient {
+    return OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
+}
+
+fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    return Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(okHttpClient)
+        .build()
 }
