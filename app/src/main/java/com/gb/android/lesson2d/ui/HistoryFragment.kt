@@ -6,20 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.gb.android.lesson2d.R
-import com.gb.android.lesson2d.databinding.FragmentResultBinding
-import com.gb.android.lesson2d.model.DataModel
+import com.gb.android.lesson2d.databinding.FragmentHistoryBinding
+import com.gb.android.lesson2d.model.HistoryEntity
 import com.gb.android.lesson2d.model.Result
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ResultFragment : Fragment() {
+class HistoryFragment : Fragment() {
 
-    private var _binding: FragmentResultBinding? = null
+    private var _binding: FragmentHistoryBinding? = null
     private val binding get() = _binding!!
     private val viewModel: TranslationSearchViewModel by activityViewModels()
 
@@ -28,7 +26,7 @@ class ResultFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentResultBinding.inflate(inflater, container, false)
+        _binding = FragmentHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -38,33 +36,24 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupUI() {
-        val data: List<DataModel> = ArrayList()
+        val data: List<HistoryEntity> = ArrayList()
         val layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerResult.layoutManager = layoutManager
+        binding.recyclerHistory.layoutManager = layoutManager
 
         val dividerItemDecoration = DividerItemDecoration(
-            binding.recyclerResult.context,
+            binding.recyclerHistory.context,
             layoutManager.orientation
         )
+        binding.recyclerHistory.addItemDecoration(dividerItemDecoration)
+        val historyAdapter = HistoryAdapter(data)
 
-        binding.recyclerResult.addItemDecoration(dividerItemDecoration)
-        val resAdapter = ResultAdapter(
-            data,
-            ClickListener { dataModel: DataModel -> viewModel.onWordClicked(dataModel) })
-        binding.recyclerResult.adapter = resAdapter
-        viewModel.navigateToDetail.observe(viewLifecycleOwner) {
-            it?.let {
-                findNavController().navigate(
-                    R.id.action_homeViewPagerFragment_to_detailSearchFragment
-                )
-                viewModel.doneNavigatingDetail()
-            }
-        }
-        viewModel.searchList.observe(viewLifecycleOwner) { result ->
+        binding.recyclerHistory.adapter = historyAdapter
+
+        viewModel.historyList.observe(viewLifecycleOwner) { result   ->
             when (result.status) {
                 Result.Status.SUCCESS -> {
                     result.data?.let { list ->
-                        resAdapter.setData(list)
+                        historyAdapter.setData(list)
                     }
                     binding.loading.visibility = View.GONE
                 }
@@ -73,6 +62,7 @@ class ResultFragment : Fragment() {
                     result.message?.let {
                         showError(it)
                     }
+                    historyAdapter.setData(data)
                     binding.loading.visibility = View.GONE
                 }
 
@@ -81,16 +71,19 @@ class ResultFragment : Fragment() {
                 }
             }
         }
-    }
 
-    private fun showError(msg: String) {
-        Snackbar.make(binding.resLayout, msg, Snackbar.LENGTH_INDEFINITE).setAction("DISMISS") {
-        }.show()
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
+    }
+
+    private fun showError(msg: String) {
+        Snackbar.make(binding.historyLayout, msg, Snackbar.LENGTH_INDEFINITE).setAction("DISMISS") {
+        }.show()
     }
 
 }

@@ -15,21 +15,36 @@ class TranslationSearchViewModel @Inject constructor(private val repository: Rep
 
     lateinit var toDataModel: DataModel
     private val _wordToSearch = MutableLiveData<String>()
+    private val _wordToSearchHistory = MutableLiveData<String>()
     private val _searchList = _wordToSearch.switchMap { id ->
         repository.search(id)
     }
     val searchList = _searchList
 
+    private val _historyList = _wordToSearchHistory.switchMap { id ->
+        repository.wordCached(id)
+    }
+    val historyList = _historyList
+
+
+    private val _navigateToHistory = MutableLiveData<Boolean?>()
+    val navigateToHistory
+        get() = _navigateToHistory
+
+    fun doneNavigatingHistory() {
+        _navigateToHistory.value = null
+    }
+
     private val _navigateToDetail = MutableLiveData<Boolean?>()
     val navigateToDetail
         get() = _navigateToDetail
 
-    fun doneNavigating() {
+    fun doneNavigatingDetail() {
         _navigateToDetail.value = null
     }
 
     fun onWordClicked(dataModel: DataModel) {
-        toDataModel=dataModel
+        toDataModel = dataModel
         _navigateToDetail.value = true
     }
 
@@ -37,4 +52,10 @@ class TranslationSearchViewModel @Inject constructor(private val repository: Rep
     fun start(wordToSearch: String) {
         _wordToSearch.value = wordToSearch
     }
+
+    fun history(wordToSearch: String) {
+        _wordToSearchHistory.value = wordToSearch
+        _navigateToHistory.value = true
+    }
+
 }
