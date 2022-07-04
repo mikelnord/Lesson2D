@@ -6,13 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.gb.android.lesson2d.R
 import com.gb.android.lesson2d.databinding.FragmentResultBinding
 import com.gb.android.lesson2d.model.DataModel
 import com.gb.android.lesson2d.model.Result
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ResultFragment : Fragment() {
 
     private var _binding: FragmentResultBinding? = null
@@ -44,10 +48,19 @@ class ResultFragment : Fragment() {
         )
 
         binding.recyclerResult.addItemDecoration(dividerItemDecoration)
-        val resAdapter = ResultAdapter(data)
+        val resAdapter = ResultAdapter(
+            data,
+            ClickListener { dataModel: DataModel -> viewModel.onWordClicked(dataModel) })
         binding.recyclerResult.adapter = resAdapter
+        viewModel.navigateToDetail.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(
+                    R.id.action_homeViewPagerFragment_to_detailSearchFragment
+                )
+                viewModel.doneNavigating()
+            }
+        }
         viewModel.searchList.observe(viewLifecycleOwner) { result ->
-
             when (result.status) {
                 Result.Status.SUCCESS -> {
                     result.data?.let { list ->

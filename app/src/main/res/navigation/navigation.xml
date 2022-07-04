@@ -7,5 +7,21 @@
     <fragment
         android:id="@+id/homeViewPagerFragment"
         android:name="com.gb.android.lesson2d.ui.HomeViewPagerFragment"
-        android:label="HomeViewPagerFragment" />
+        android:label="HomeViewPagerFragment" >
+        <action
+            android:id="@+id/action_homeViewPagerFragment_to_detailSearchFragment"
+            app:destination="@id/detailSearchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.gb.android.lesson2d.ui.ResultFragment"
+        android:label="ResultFragment" />
+    <fragment
+        android:id="@+id/detailSearchFragment"
+        android:name="com.gb.android.lesson2d.ui.DetailSearchFragment"
+        android:label="DetailSearchFragment" >
+        <action
+            android:id="@+id/action_detailSearchFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
 </navigation>
