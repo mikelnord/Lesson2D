@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_homeViewPagerFragment_to_detailSearchFragment"
             app:destination="@id/detailSearchFragment" />
+        <action
+            android:id="@+id/action_homeViewPagerFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
@@ -24,4 +27,8 @@
             android:id="@+id/action_detailSearchFragment_to_resultFragment"
             app:destination="@id/resultFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.gb.android.lesson2d.ui.HistoryFragment"
+        android:label="HistoryFragment" />
 </navigation>

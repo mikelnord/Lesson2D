@@ -14,40 +14,32 @@ class Repository @Inject constructor(
     private val historyDao: HistoryDao
 ) {
 
-    fun search(wordToSearch: String)= liveData(Dispatchers.IO) {
+    fun search(wordToSearch: String) = liveData(Dispatchers.IO) {
         emit(Result.loading(null))
-        val result=remoteDataSource.searchWord(wordToSearch)
+        val result = remoteDataSource.searchWord(wordToSearch)
         if (result.status == Result.Status.SUCCESS) {
             result.data?.let { it ->
                 historyDao.insertAll(convertDataModelSuccessToEntity(it))
             }
         }
         emit(result)
-
     }
 
-    private suspend fun wordCached(): Result<List<HistoryEntity>>? =
-        historyDao.getAll()?.let {
-           Result.success(it)
+    fun wordCached(wordToSearch: String) = liveData(Dispatchers.IO) {
+        emit(Result.success(listOf()))
+        val result = historyDao.getDataByWord(wordToSearch)
+        if (!result.isNullOrEmpty()) {
+            emit(Result.success(result))
         }
+    }
 
-    fun mapHistoryEntityToSearchResult(list: List<HistoryEntity>): List<DataModel> {
-        val dataModel= ArrayList<DataModel>()
-        if (!list.isNullOrEmpty()) {
-            for (entity in list) {
-                dataModel.add(DataModel(entity.word, null))
+    private fun convertDataModelSuccessToEntity(result: List<DataModel>): List<HistoryEntity> {
+        val listHistory = mutableListOf<HistoryEntity>()
+        if (result.isNotEmpty()) {
+            for (entity in result) {
+                entity.text?.let { HistoryEntity(it, null) }?.let { listHistory.add(it) }
             }
         }
-        return dataModel
-    }
-
-    private fun convertDataModelSuccessToEntity(result:List<DataModel>): List<HistoryEntity> {
-        val listHistory = mutableListOf<HistoryEntity>()
-                 if (result.isNotEmpty()) {
-                     for (entity in result) {
-                         entity.text?.let { HistoryEntity(it, null) }?.let { listHistory.add(it) }
-                     }
-                 }
         return listHistory
     }
 
