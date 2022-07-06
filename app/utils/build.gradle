@@ -1,0 +1,21 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+
+dependencies {
+
+    implementation project(Modules.model)
+    implementation Design.appcompat
+    implementation Design.material
+
+    //Kotlin
+    implementation Kotlin.core
+
+
+    //Test
+    testImplementation TestImpl.junit
+    androidTestImplementation TestImpl.testExt
+    androidTestImplementation TestImpl.espresso
+}

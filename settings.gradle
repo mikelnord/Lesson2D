@@ -14,3 +14,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Lesson2D"
 include ':app'
+include ':model'
+include ':utils'
+include ':core'
+include ':repository'

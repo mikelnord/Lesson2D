@@ -1,0 +1,40 @@
+plugins {
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+    id 'dagger.hilt.android.plugin'
+
+}
+dependencies {
+    implementation project(Modules.model)
+    implementation project(Modules.utils)
+    implementation project(Modules.repository)
+    implementation Design.appcompat
+
+    //Kotlin
+    implementation Kotlin.core
+
+    //Retrofit 2
+    implementation Retrofit.converter_gson
+
+    //Room
+    implementation Room.room_ktx
+    implementation Room.runtime
+    kapt Room.compiler
+
+    implementation Glide.glide
+    implementation Design.material
+    implementation Design.appcompat
+    implementation Design.navigation_ktx
+    implementation Design.navigation_ui
+
+    implementation Hilt.hilt_android
+    kapt Hilt.hilt_android_compiler
+    implementation Kotlin.lifecycle_viewmodel_ktx
+    implementation Kotlin.lifecycle_livedata_ktx
+
+    //Test
+    testImplementation TestImpl.junit
+    androidTestImplementation TestImpl.testExt
+    androidTestImplementation TestImpl.espresso
+}
