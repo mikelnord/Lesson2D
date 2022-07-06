@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.gb.android.lesson2d.R
 import com.gb.android.lesson2d.databinding.FragmentTranslationSearchBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,9 +30,11 @@ class TranslationSearchFragment : Fragment() {
                     .isNotEmpty()
             ) {
                 binding.searchButton.isEnabled = true
+                binding.historyButton.isEnabled = true
                 binding.clearTextButton.visibility = View.VISIBLE
             } else {
                 binding.searchButton.isEnabled = false
+                binding.historyButton.isEnabled = false
                 binding.clearTextButton.visibility = View.GONE
             }
         }
@@ -50,6 +54,22 @@ class TranslationSearchFragment : Fragment() {
         binding.searchEditText.addTextChangedListener(textWatcher)
         binding.searchButton.setOnClickListener { onButtonSearchClick() }
         addOnClearClickListener()
+        binding.historyButton.setOnClickListener {
+            onButtonHistoryClick()
+        }
+        viewModel.navigateToHistory.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(
+                    R.id.action_homeViewPagerFragment_to_historyFragment
+                )
+                viewModel.doneNavigatingHistory()
+            }
+        }
+
+    }
+
+    private fun onButtonHistoryClick() {
+        viewModel.history(binding.searchEditText.text.toString())
     }
 
     private fun onButtonSearchClick() {
@@ -63,6 +83,7 @@ class TranslationSearchFragment : Fragment() {
         binding.clearTextButton.setOnClickListener {
             binding.searchEditText.setText("")
             binding.searchButton.isEnabled = false
+            binding.historyButton.isEnabled = false
         }
     }
 
