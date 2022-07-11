@@ -9,11 +9,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gb.android.core.databinding.FragmentResultBinding
 import com.gb.android.model.DataModel
 import com.gb.android.model.Result
+import com.gb.android.utils.viewById
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class ResultFragment : Fragment() {
@@ -21,6 +24,7 @@ class ResultFragment : Fragment() {
     private var _binding: FragmentResultBinding? = null
     private val binding get() = _binding!!
     private val viewModel: TranslationSearchViewModel by activityViewModels()
+    private val recyclerview by viewById<RecyclerView>(R.id.recyclerResult)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,18 +43,18 @@ class ResultFragment : Fragment() {
     private fun setupUI() {
         val data: List<DataModel> = ArrayList()
         val layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerResult.layoutManager = layoutManager
+        recyclerview.layoutManager=layoutManager
 
         val dividerItemDecoration = DividerItemDecoration(
-            binding.recyclerResult.context,
+            recyclerview.context,
             layoutManager.orientation
         )
 
-        binding.recyclerResult.addItemDecoration(dividerItemDecoration)
+        recyclerview.addItemDecoration(dividerItemDecoration)
         val resAdapter = ResultAdapter(
             data,
             ClickListener { dataModel: DataModel -> viewModel.onWordClicked(dataModel) })
-        binding.recyclerResult.adapter = resAdapter
+        recyclerview.adapter = resAdapter
         viewModel.navigateToDetail.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
